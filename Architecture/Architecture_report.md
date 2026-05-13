@@ -1,28 +1,42 @@
 # Hugo — Architecture Report
 
-## Tooling Declaration
-This document outlines the software architecture of the Hugo project, a fast and flexible static site generator written in Go. 
-The architecture is described using the C4 model notation. (use Structurizr)
-
+Report part: Architecture  
+Diagram tool: Structurizr
+Scope: the Hugo static site generator, focusing on the main Hugo CLI binary and its internal package-level components.
 
 ## 1. Context level
-The Context diagram illustrates how Hugo interacts with its external environment, including users (Content Creators, Developers) and external systems (File System, Git repositories, Web Browsers).
-
+![](diagrams/Hugo-System-Context.png)
+The system under analysis is Hugo, an open-source static site generator written in Go. At the context level, Hugo is modeled as a software system used primarily by content creators and site maintainers. These users prepare the source material of a website, including content files, configuration, layouts, themes, and static assets, and invoke Hugo through the command line to build or preview the site. The system boundary is therefore drawn around the Hugo generator itself, not around the final static website produced by the build process.
+The main responsibility of Hugo is to transform source artifacts into a deployable static website. It reads the site source from the local file system, processes content and templates, resolves modules or themes when needed, and writes the generated output back to the file system. During development, Hugo can also serve a local preview of the generated site to a web browser. After generation, the static output can be published to an external deployment or hosting platform such as GitHub Pages, Netlify, a CDN, or a generic web server.
+The most relevant external systems are the local file system, Git repositories or source hosting platforms, module and theme sources, deployment platforms, and the web browser used for local preview. The local file system is essential because Hugo is fundamentally file-oriented: it reads content, configuration, layouts, assets, and themes from the project directory and produces a static output directory. Git repositories and source hosting platforms support collaboration and versioning of both Hugo itself and Hugo-based websites. Module and theme sources provide reusable dependencies, while deployment platforms are responsible for making the generated static website available to end users.
+This context view highlights Hugo's architectural role as a transformation engine between source material and publication targets. It also clarifies that Hugo is not a runtime web application in the usual sense: once the static website has been generated and deployed, serving the final website is the responsibility of the hosting platform or web server rather than Hugo itself.
 
 ## 2. Container level
-The Container level zooms into the Hugo system to show its high-level executable units. Since Hugo is primarily distributed as a single static binary, the "containers" here are logical execution environments or major sub-systems.
+![](diagrams/Hugo-Container-Level.png)
+At the container level, Hugo is modeled as a single deployable command-line application with a small set of supporting local storage containers. This representation reflects the actual architectural nature of the system: Hugo is not a distributed web application composed of independently deployed services, but a modular monolithic static site generator executed locally by a site author or developer.
+The central container is the Hugo Executable. It is the main runtime unit of the system and is implemented in Go. It exposes the command-line interface used to run build, server, module, new-site, and deployment-related commands. Internally, this executable coordinates the complete generation process: it reads project files, loads configuration, resolves content and layouts, processes resources, renders templates, writes the generated website, and optionally starts a local development server.
+The Hugo Project Workspace is modeled as an external data store because it is not part of the Hugo executable itself, but it is essential for its operation. It contains the input artifacts of a Hugo site, including configuration files, Markdown content, layouts, assets, static files, data files, i18n resources, and theme-related files. Hugo reads these artifacts during the build process and interprets them as the source model of the website.
+Inside the Hugo system boundary, the Resource Cache and the Generated Public Site are represented as local filesystem-based data stores. The Resource Cache stores processed resources such as transformed assets, images, and intermediate build artifacts. This improves build performance and avoids unnecessary repeated processing. The Generated Public Site represents the output of the build process: static HTML, CSS, JavaScript, images, feeds, and other artifacts that can be served by any static hosting platform.
+Hugo also interacts with several external systems. Module and Theme Repositories provide reusable Hugo Modules and themes, usually fetched through Git or Go module mechanisms. The Asset Toolchain represents optional external processors such as Dart Sass, PostCSS, Tailwind, or esbuild, which may be invoked when the project configuration requires them. A Development Browser interacts with the Hugo Executable through HTTP when the local development server is running. Finally, a Hosting or Deployment Platform receives the generated static website and serves it to Website Visitors.
+This container view shows that Hugo follows a modular monolithic architectural style. Its major responsibilities are packaged into a single executable, while input, cache, and output are separated through filesystem-based data stores. The main communication style is local and synchronous: the user invokes commands, the executable reads and writes files, and optional preview traffic is served over HTTP during development.
 
-## 3. Relationship with Clean Architecture
-Hugo partially resembles Clean Architecture, but it does not strictly implement the Dependency Rule.
+## 3. Component level – Hugo CLI binary
+![](diagrams/Hugo-Component-Level.png)
+The component diagram focuses on the Hugo Executable container, which is the main runtime unit of the system. Since Hugo is distributed as a single command-line application rather than as a set of independently deployed services, the components in this view represent logical source-code and runtime responsibilities inside the executable. The goal of this view is therefore to explain how the main internal subsystems collaborate during site generation, development preview, module resolution, asset processing, and output publishing.
+The Command Layer is the entry point for user interaction. It exposes the command-line interface and dispatches commands such as build, server, module management, new site creation, and deployment. This component does not perform the whole build by itself; instead, it coordinates the invocation of lower-level components responsible for configuration loading, dependency preparation, site building, module management, and development serving.
+The Configuration Loader is responsible for reading and normalizing the site's configuration. It interprets configuration files, language settings, output formats, mounts, and build options. This component is important because most later build decisions depend on configuration: which content and asset folders are mounted, which themes or modules are enabled, which output formats are required, and how multilingual or multi-output generation should behave.
+The Dependency Assembler wires together the runtime services required by the build. It prepares shared dependencies such as file systems, logging, template support, resource services, and configuration-dependent services. This component plays a role similar to an internal composition root: it reduces direct construction dependencies across the rest of the system and centralizes the creation of shared services used by the core build process.
+The Site Build Orchestrator is the central component of the Hugo executable. It coordinates the complete site generation workflow: it builds the page model, invokes markup conversion, executes templates, processes resources, and delegates publishing of generated artifacts. This component represents the core application logic of Hugo and is the main coordinator between the domain model, rendering system, asset pipeline, and output publication.
+The Content and Page Model component represents Hugo's internal model of pages, sections, taxonomies, menus, multilingual sites, and output formats. It provides the structured data consumed by the rendering and publishing pipeline. The Markup and Shortcode Processor converts source content into renderable page content and evaluates Hugo-specific shortcodes and render hooks. The Template Rendering Engine then applies layouts and template functions to generate final output for pages and other resources.
+The Resource and Asset Pipeline handles the transformation of assets such as images, CSS, JavaScript, Sass, and other resources. It may use external tools when configured, for example Sass, PostCSS, Tailwind, or esbuild. To improve performance, transformed resources can be written to the Resource Cache. This separation is architecturally relevant because asset processing is a distinct concern from content rendering, even though both are coordinated during the same build.
+The Module and Theme Manager resolves reusable modules and themes from local project files or external repositories. This supports extensibility and reuse by allowing Hugo sites to depend on shared layouts, assets, and configuration fragments. Finally, the Publisher writes the generated website to the output directory and can also support deployment-related workflows. The Development Server is used during local development to serve preview pages, trigger rebuilds, and provide browser-based feedback.
+Overall, the component view shows a modular monolithic internal structure. Hugo's components are not independently deployable, but they are separated by responsibilities: command handling, configuration, dependency assembly, site orchestration, content modeling, markup conversion, template rendering, resource processing, module resolution, publishing, and local serving. The main dependency direction flows from the user-facing command layer toward the build orchestration core and then toward specialized processing and output components. This structure supports understandability, extensibility, and performance while keeping the operational model simple as a single executable application.
 
-## 4. Component level
-The following diagram decomposes the main executable container. The level is package/component oriented: each component corresponds to a cohesive set of Go packages rather than a separately deployable unit.
 
-
-### Component explanations
+## 4. Relationship with Clean Architecture
 
 ## 5. SOLID observations at component level
 
-## 6. Architectural characteristics
+## 6. Architectural characteristics and metrics-based reasoning
 
 ## 7. Summary
