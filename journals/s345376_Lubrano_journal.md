@@ -1,5 +1,8 @@
-| Date | Activity | Section | Effort |
-| :--- | :--- | :--- | :--- |
-| 30 April 2026  | Meeting to define the workflow and workload distribution. Established two sub-groups (Design and Architecture) with a cross-review policy to ensure consistency and overall quality. | Coordination | 1.5h |
-| 04 May 2026 | Individual research on Hugo's static site generation logic and directory structure. | Design | 1h |
-| 05 May 2026 | Design sub-group meeting: initial report drafting and environment setup for visualization tools. | Design | 3h |
+| Date          | Activity                                                                                                                                                                                          | Section      | Effort |
+| :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------- | :----- |
+| 30 April 2026 | Meeting to define the workflow and workload distribution. Established two sub-groups (Design and Architecture) with a cross-review policy to ensure consistency and overall quality.              | Coordination | 1.5h   |
+| 04 May 2026   | Individual research on Hugo's static site generation logic and directory structure.                                                                                                               | Design       | 1h     |
+| 05 May 2026   | Design sub-group meeting: initial report drafting and environment setup for visualization tools.                                                                                                  | Design       | 3h     |
+| 15 May 2026   | Cloned Hugo's official repository and performed environment configuration. Generated Git commit history logs using numerical statistics filtering to prepare the codebase for evolution analysis. | Design       | 1h     |
+| 16 May 2026   | Setup and executed Code Maat for repository mining. Performed Change Coupling analysis to measure historical co-changes across the system's files.                                                | Design       | 1.5h   |
+| 17 May 2026   | Analyzed the raw CSV coupling results. Applied data-cleaning filters to remove documentation and test scripts, isolating core production file relationships based on degree and revision volume.  | Design       | 2h   |
