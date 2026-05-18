@@ -4,3 +4,4 @@
 | 04 May 2026 | Identified and tried the tools for the Design section. I suggest using: go list, godegraph, graphviz and code matt | Coordination | 1h |
 | 05 May 2026 | Meeting with the Design sub-group to start together the report. | Design | 3h |
 | 16 May 2026 | Runned the project to undestand how hugo.io works, then started to look for design patterns. Identified 3 patterns since now (Observer, Singleton and decorator). | Design - Section #2 | 6h |
+| 18 May 2026 | Identified two more patterns (Builder and Prototype pattern). Write down Builder patter. | Design - Section #2 | 1h |
