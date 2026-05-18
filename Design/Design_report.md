@@ -3,8 +3,12 @@
 ## 1. Dependencies
 
 ### 1.1 Intro
-Methodology and Tools
+#### Methodology and Tools
+To analyze Hugo's design, we combined two complementary approaches.
+
 For the code dependency task we used custom PowerShell scripts to analyze Go import statements, identifying files and their respective packages with the highest and lowest number of dependencies. Since Go dependencies are declared explicitly through imports at the package level, this approach provides a direct approximation of code dependency between software modules.
+
+Parallelly, to analyze the software’s knowledge dependencies, we performed a repository mining process on Hugo’s official Git repository. This was done by extracting a log file containing Hugo’s complete commit history. We then utilized **Code Maat**, a specialized command-line tool designed for analyzing a repository’s code’s evolution over time. Specifically, we performed a **Change Coupling analysis** that calculated the temporal co-changes across the codebase. 
 
 ### 1.2 Code Dependencies
 Code dependencies: based on imports in source code
@@ -41,8 +45,15 @@ These files are at the absolute base of the dependency hierarchy and generally f
 
 
 ### 1.3 Knowledge Dependencies 
-Knowledge dependencies: based on co-change (how often two files are
-changed together in the same commit)
+To isolate the repository’s evolutionary behaviors, we executed a Change Coupling analysis via Code Maat, yielding a dataset that maps the system’s Knowledge Dependencies, by showing how often two distinct files are modified within the same commit. 
+These relationships are evaluated through two metrics: 
+* **`degree`**: the coupling strength, expressed as a percentage. It represents the probability that a modification in one file necessitates a simultaneous change in the coupled file within the same commit.
+* **`average-revs`**: The absolute volume of shared revisions, indicating the total number of times the two files were modified together across the repository's history.
+  
+In order to leave out noise, the results were filtered by excluding from the analysis irrelevant entities, such as documentation (`docs/`) and testing suites (`*_test.go`). Additionally, infrastructure dependencies were evaluated separately. For instance, the pair `go.mod` ↔ `go.sum` exhibits an extremely high evolutionary coupling (97% degree across almost 1000 commits), but that extremely high co-change is due to them being tied to Go’s package manager, rather than representing an actual architectural flaw, so it was therefore omitted from the analysis. 
+
+The results were sorted decreasingly by `average-revs` and then filtered, only showing file pairs with a `degree` **above 30%**. This specific filtering strategy was chosen because, even though a high coupling percentage is a strong indicator of dependency, it becomes more meaningful when supported by a significant amount of commits.
+
 • Which are not consistent with code dependencies?
 
 ### 1.4 Comparison between Code and Knowledge Dependencies
