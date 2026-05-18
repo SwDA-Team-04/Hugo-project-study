@@ -21,15 +21,22 @@ Another critical component is templatestore.go containg 42 imports, inside the t
 Two examples of a highly critical components is the allconfig package with allconfig.go (42 imports) and deps package with deps.go(33 imports). they have both high fan-out and high fan-in. Package allconfig which contains all configuration options in Hugo (output formats, languages, module settings) and serves as the foundation for the system. while Deps acts as a shared dependency container (Deps holds dependencies used by many). The Deps structure centralizes shared services such as filesystem access, caches, logging, resource handling, configuration and templates to the rest of the application.
 
 By analyzing the flow of dependencies, we can observe that Hugo is built around three major layers:
+
 •	CLI Layer (commands package)
+
 •	Core (hugolib package)
+
 •	Infrastructure and Shared Services (deps, allconfig, helpers, tplimpl, resources, hugofs)
+
 The CLI layer uses(imports) the core, which in turn uses (orchestrates) the Infrastructure Services.
 
 At the opposite side, several files have zero or very few imports (low fan-out) such as constants.go, compare.go, and doc.go.
 These files are at the absolute base of the dependency hierarchy and generally fall into three categories:
+
 •	Utility Logic: Files like compare.go implement isolated mathematical or sorting algorithms.
+
 •	Domain Dictionaries: Files like constants.go provide constant definitions and interface.
+
 •	Documentation: Files like doc.go contain documentation strings.
 
 
