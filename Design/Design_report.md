@@ -3,14 +3,17 @@
 ## 1. Dependencies
 
 ### 1.1 Intro
+
 #### Methodology and Tools
+
 To analyze Hugo's design, we combined two complementary approaches.
 
 For the code dependency task we used custom PowerShell scripts to analyze Go import statements, identifying files and their respective packages with the highest and lowest number of dependencies. Since Go dependencies are declared explicitly through imports at the package level, this approach provides a direct approximation of code dependency between software modules.
 
-Parallelly, to analyze the software’s knowledge dependencies, we performed a repository mining process on Hugo’s official Git repository. This was done by extracting a log file containing Hugo’s complete commit history. We then utilized **Code Maat**, a specialized command-line tool designed for analyzing a repository’s code’s evolution over time. Specifically, we performed a **Change Coupling analysis** that calculated the temporal co-changes across the codebase. 
+Parallelly, to analyze the software’s knowledge dependencies, we performed a repository mining process on Hugo’s official Git repository. This was done by extracting a log file containing Hugo’s complete commit history. We then utilized **Code Maat**, a specialized command-line tool designed for analyzing a repository’s code’s evolution over time. Specifically, we performed a **Change Coupling analysis** that calculated the temporal co-changes across the codebase.
 
 ### 1.2 Code Dependencies
+
 Code dependencies: based on imports in source code
 • Which files have most or least dependencies? Why?
 
@@ -26,95 +29,126 @@ Two examples of a highly critical components is the allconfig package with allco
 
 By analyzing the flow of dependencies, we can observe that Hugo is built around three major layers:
 
-•	CLI Layer (commands package)
+• CLI Layer (commands package)
 
-•	Core (hugolib package)
+• Core (hugolib package)
 
-•	Infrastructure and Shared Services (deps, allconfig, helpers, tplimpl, resources, hugofs)
+• Infrastructure and Shared Services (deps, allconfig, helpers, tplimpl, resources, hugofs)
 
 The CLI layer uses(imports) the core, which in turn uses (orchestrates) the Infrastructure Services.
 
 At the opposite side, several files have zero or very few imports (low fan-out) such as constants.go, compare.go, and doc.go.
 These files are at the absolute base of the dependency hierarchy and generally fall into three categories:
 
-•	Utility Logic: Files like compare.go implement isolated mathematical or sorting algorithms.
+• Utility Logic: Files like compare.go implement isolated mathematical or sorting algorithms.
 
-•	Domain Dictionaries: Files like constants.go provide constant definitions and interface.
+• Domain Dictionaries: Files like constants.go provide constant definitions and interface.
 
-•	Documentation: Files like doc.go contain documentation strings.
+• Documentation: Files like doc.go contain documentation strings.
 
+### 1.3 Knowledge Dependencies
 
-### 1.3 Knowledge Dependencies 
-To isolate the repository’s evolutionary behaviors, we executed a Change Coupling analysis via Code Maat, yielding a dataset that maps the system’s Knowledge Dependencies, by showing how often two distinct files are modified within the same commit. 
-These relationships are evaluated through two metrics: 
-* **`degree`**: the coupling strength, expressed as a percentage. It represents the probability that a modification in one file necessitates a simultaneous change in the coupled file within the same commit.
-* **`average-revs`**: The absolute volume of shared revisions, indicating the total number of times the two files were modified together across the repository's history.
-  
-In order to leave out noise, the results were filtered by excluding from the analysis irrelevant entities, such as documentation (`docs/`) and testing suites (`*_test.go`). Additionally, infrastructure dependencies were evaluated separately. For instance, the pair `go.mod` ↔ `go.sum` exhibits an extremely high evolutionary coupling (97% degree across almost 1000 commits), but that extremely high co-change is due to them being tied to Go’s package manager, rather than representing an actual architectural flaw, so it was therefore omitted from the analysis. 
+To isolate the repository’s evolutionary behaviors, we executed a Change Coupling analysis via Code Maat, yielding a dataset that maps the system’s Knowledge Dependencies, by showing how often two distinct files are modified within the same commit.
+These relationships are evaluated through two metrics:
+
+- **`degree`**: the coupling strength, expressed as a percentage. It represents the probability that a modification in one file necessitates a simultaneous change in the coupled file within the same commit.
+- **`average-revs`**: The absolute volume of shared revisions, indicating the total number of times the two files were modified together across the repository's history.
+
+In order to leave out noise, the results were filtered by excluding from the analysis irrelevant entities, such as documentation (`docs/`) and testing suites (`*_test.go`). Additionally, infrastructure dependencies were evaluated separately. For instance, the pair `go.mod` ↔ `go.sum` exhibits an extremely high evolutionary coupling (97% degree across almost 1000 commits), but that extremely high co-change is due to them being tied to Go’s package manager, rather than representing an actual architectural flaw, so it was therefore omitted from the analysis.
 
 The results were sorted decreasingly by `average-revs` and then filtered, only showing file pairs with a `degree` **above 30%**. This specific filtering strategy was chosen because, even though a high coupling percentage is a strong indicator of dependency, it becomes more meaningful when supported by a significant amount of commits.
 
 In the following section, we briefly analyse the most meaningful pairs that resulted from our analysis, ordered by their historical volume:
 
-* **`hugolib/page.go` ↔ `hugolib/site.go` (32% degree, 598 revs):** this was expected, given that a website is essentially a collection of pages, modifying how the global site behaves naturally requires updating how individual pages are processed.
-* **`commands/new.go` ↔ `helpers/hugo.go` (34% degree, 171 revs):** this shows that modifying the content creation command often forces developers to update general utility functions in the helpers folder.
-* **`commands/commandeer.go` ↔ `commands/server.go` (32% degree, 153 revs):** this highlights that evolutions in command line interface initialization often require a parallel adjustment to the local development server configuration.
-* **`hugofs/rootmapping_fs.go` ↔ `hugolib/filesystems/basefs.go` (34% degree, 41 revs):** this indicates that changing how virtual folders are mapped requires synchronous updates to the core filesystem structures.
-* **`resources/page/page.go` ↔ `resources/page/page_nop.go` (61% degree, 33 revs):** here we register a very high co-change rate due to the symmetrical nature of the two files, where updating the real page forces a structural alignment of its non-operational fallback counterpart.
-* **`hugolib/page__common.go` ↔ `resources/page/page.go` (40% degree, 30 revs)** and **`hugolib/site_new.go` ↔ `resources/page/site.go` (41% degree, 29 revs):** both these pairs reveal a tight coupling between core logical entities and their abstract representations inside the shared resources module.
-* **`parser/pageparser/item.go` ↔ `parser/pageparser/pagelexer.go` (57% degree, 25 revs):** this pairing is easily justified by the fact that the `pagelexer.go` file scans the text for special Hugo commands, while `item.go` defines the structure of what was found. If the parsing rules change, the way the pieces are catalogued must change accordingly.
+- **`hugolib/page.go` ↔ `hugolib/site.go` (32% degree, 598 revs):** this was expected, given that a website is essentially a collection of pages, modifying how the global site behaves naturally requires updating how individual pages are processed.
+- **`commands/new.go` ↔ `helpers/hugo.go` (34% degree, 171 revs):** this shows that modifying the content creation command often forces developers to update general utility functions in the helpers folder.
+- **`commands/commandeer.go` ↔ `commands/server.go` (32% degree, 153 revs):** this highlights that evolutions in command line interface initialization often require a parallel adjustment to the local development server configuration.
+- **`hugofs/rootmapping_fs.go` ↔ `hugolib/filesystems/basefs.go` (34% degree, 41 revs):** this indicates that changing how virtual folders are mapped requires synchronous updates to the core filesystem structures.
+- **`resources/page/page.go` ↔ `resources/page/page_nop.go` (61% degree, 33 revs):** here we register a very high co-change rate due to the symmetrical nature of the two files, where updating the real page forces a structural alignment of its non-operational fallback counterpart.
+- **`hugolib/page__common.go` ↔ `resources/page/page.go` (40% degree, 30 revs)** and **`hugolib/site_new.go` ↔ `resources/page/site.go` (41% degree, 29 revs):** both these pairs reveal a tight coupling between core logical entities and their abstract representations inside the shared resources module.
+- **`parser/pageparser/item.go` ↔ `parser/pageparser/pagelexer.go` (57% degree, 25 revs):** this pairing is easily justified by the fact that the `pagelexer.go` file scans the text for special Hugo commands, while `item.go` defines the structure of what was found. If the parsing rules change, the way the pieces are catalogued must change accordingly.
 
 Some of these pairs display a co-change that is easily explained due to the nature of the software’s domain; however, this analysis also highlights some continuous historical bonds between files belonging to conceptually distant packages.
 
 ### 1.4 Comparison between Code and Knowledge Dependencies
 
-• Which are not consistent with code dependencies?
+Comparing the results obtained by analyzing the static dependencies and the repository history, two main cases emerged in which the Change Coupling is inconsistent with the theoretical structure of the software levels:
+
+* Level inconsistency between the pair `commands/new.go` and `helpers/hugo.go`: the static analysis suggests that Hugo is divided into three hierarchical levels (CLI —> Core —> Infrastructure). The `helpers/` folder seems to be part of the Infrastructural Level, collecting general purpose utilities intended to remain independent from specific CLI commands. The data, however, show a strong evolutionary coupling: it is therefore legitimate to deduce that often, as commands to generate new content are modified, it is also necessary to change the utilities. This behavior is compatible with an information leakage phenomenon: design concerns appear to have leaked into a generic utility module. Through a further analysis of the commit logs and the repository history, we noticed that the file `helpers/hugo.go` was the subject of a massive refactoring, likely aimed at improving information hiding.
+
+* Abstraction inconsistencies between the Core (`hugolib/`) and the Resources (`resources/`): the static analysis shows an apparently unidirectional and clean flow, in which the Core modules (such as `page__common.go` and `site_new.go`) import the package `resources/page` to access its abstractions, complying with the hierarchy. From an evolutionary point of view, however, these pairs register a systemic Change Coupling (around 40%). Despite the fact that the static structure introduces dependencies that are supposedly consistent with the hierarchical architecture, the high Change Coupling observed suggests a tight co-evolution between Core and Resources. This could indicate that the separation of concerns is less clear-cut than the static analysis suggests.
 
 ## 2. Patterns
+
 [Assess pattern usage in the code:
 • Find at least 4 instances of patterns
 • Which classes play which role?
 • Why is the pattern used? Which problem does solve?
 • Is there an alternative, what would be pros & cons?]
 
-
 ### Decorator Pattern
+
 Decorator pattern allows to wrap an element in a decorator object to add extra features without modify the original element.
+
 #### Who and where?
-In ```hugofs``` package, ```decorators.go``` contains a lot of decorators. One of them is  ```NewBaseFileDecorator```,which is a decorator for Filesystems. The Filesystem is wrapped in a ```baseFileDecoratorFs``` struct, this allows to add an Opener function without modifying the underlying Fs.
+
+In `hugofs` package, `decorators.go` contains a lot of decorators. One of them is `NewBaseFileDecorator`,which is a decorator for Filesystems. The Filesystem is wrapped in a `baseFileDecoratorFs` struct, this allows to add an Opener function without modifying the underlying Fs.
+
 #### Why?
-Thanks to this operation, it's possibile to open a Filesystem using the function specified in ```NewBaseFileDecorator```, that means that a new behavior is been added but the original Filesystem structure is not been modified.
+
+Thanks to this operation, it's possibile to open a Filesystem using the function specified in `NewBaseFileDecorator`, that means that a new behavior is been added but the original Filesystem structure is not been modified.
+
 #### A possible alternative
-One possible alternative could be to modify the function to open the Fs already provided in ```Filesystem``` interface but in the project Fs are handled using an external library (```afero```), is not possible to do it unless ```afero``` library is no more used.
+
+One possible alternative could be to modify the function to open the Fs already provided in `Filesystem` interface but in the project Fs are handled using an external library (`afero`), is not possible to do it unless `afero` library is no more used.
+
 ##### Pros:
+
 The method in the interface can be freely implemented without limitation. Additionally, there wolud be one less dependency.
+
 ##### Cons:
+
 It will require a substantial effert to reimplement all the feaures alredy provided by the library and it would require maintenance effort too.
 
-
 ### Builder Pattern
+
 This pattern is used to generate a table of contents (toc) by initially setting some paramethers and build it when all parameters are setted.
+
 #### Who and where?
-In ```tablesofcontents/tableofcontents.go``` file, the function to build the toc is specified as well as the funcions to set paramethers. The ```Transform``` function in ```markup/goldmark/toc.go``` file use the pattern to set the identifiers (line 62), then adds the heading to the table (line 71) and after these operations, it builds the table at line 132.
+
+In `tablesofcontents/tableofcontents.go` file, the function to build the toc is specified as well as the funcions to set paramethers. The `Transform` function in `markup/goldmark/toc.go` file use the pattern to set the identifiers (line 62), then adds the heading to the table (line 71) and after these operations, it builds the table at line 132.
+
 #### Why?
+
 This pattern allows to build the object one step at time, without use a giant builder at which all the paramethers are provided.
+
 #### A possible alternative
-As said, this pattern avoid to user big builder method with a lot of parameters. In this case the parmeters setted are only two so the table of contents could as be build using a "traditional" builer like ```func Build(ids []string, h *Heading, row, level int) {//set params and return the ToC}```
+
+As said, this pattern avoid to user big builder method with a lot of parameters. In this case the parmeters setted are only two so the table of contents could as be build using a "traditional" builer like `func Build(ids []string, h *Heading, row, level int) {//set params and return the ToC}`
+
 ##### Pros:
+
 In this example the params are only a few so they are easy to manage and could be helpful to not distribute the constrution of the table through multiple functions.
+
 ##### Cons:
+
 The cons are that you have to prepare all the parameters in and then call the builder after.
 
-
 ### Prototype Pattern
+
 #### Who and where?
+
 TO DO
-```func (t *Template) Clone() (*Template, error) ``` in ```tpl\internal\go_templates\template.go``` file...
+`func (t *Template) Clone() (*Template, error) ` in `tpl\internal\go_templates\template.go` file...
+
 #### Why?
+
 #### A possible alternative
+
 ##### Pros:
+
 ##### Cons:
 
-
 ## 3. Summary
+
 Final conclusions
