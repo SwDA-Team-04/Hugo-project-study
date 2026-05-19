@@ -54,10 +54,21 @@ In order to leave out noise, the results were filtered by excluding from the ana
 
 The results were sorted decreasingly by `average-revs` and then filtered, only showing file pairs with a `degree` **above 30%**. This specific filtering strategy was chosen because, even though a high coupling percentage is a strong indicator of dependency, it becomes more meaningful when supported by a significant amount of commits.
 
-• Which are not consistent with code dependencies?
+In the following section, we briefly analyse the most meaningful pairs that resulted from our analysis, ordered by their historical volume:
+
+* **`hugolib/page.go` ↔ `hugolib/site.go` (32% degree, 598 revs):** this was expected, given that a website is essentially a collection of pages, modifying how the global site behaves naturally requires updating how individual pages are processed.
+* **`commands/new.go` ↔ `helpers/hugo.go` (34% degree, 171 revs):** this shows that modifying the content creation command often forces developers to update general utility functions in the helpers folder.
+* **`commands/commandeer.go` ↔ `commands/server.go` (32% degree, 153 revs):** this highlights that evolutions in command line interface initialization often require a parallel adjustment to the local development server configuration.
+* **`hugofs/rootmapping_fs.go` ↔ `hugolib/filesystems/basefs.go` (34% degree, 41 revs):** this indicates that changing how virtual folders are mapped requires synchronous updates to the core filesystem structures.
+* **`resources/page/page.go` ↔ `resources/page/page_nop.go` (61% degree, 33 revs):** here we register a very high co-change rate due to the symmetrical nature of the two files, where updating the real page forces a structural alignment of its non-operational fallback counterpart.
+* **`hugolib/page__common.go` ↔ `resources/page/page.go` (40% degree, 30 revs)** and **`hugolib/site_new.go` ↔ `resources/page/site.go` (41% degree, 29 revs):** both these pairs reveal a tight coupling between core logical entities and their abstract representations inside the shared resources module.
+* **`parser/pageparser/item.go` ↔ `parser/pageparser/pagelexer.go` (57% degree, 25 revs):** this pairing is easily justified by the fact that the `pagelexer.go` file scans the text for special Hugo commands, while `item.go` defines the structure of what was found. If the parsing rules change, the way the pieces are catalogued must change accordingly.
+
+Some of these pairs display a co-change that is easily explained due to the nature of the software’s domain; however, this analysis also highlights some continuous historical bonds between files belonging to conceptually distant packages.
 
 ### 1.4 Comparison between Code and Knowledge Dependencies
 
+• Which are not consistent with code dependencies?
 
 ## 2. Patterns
 [Assess pattern usage in the code:
