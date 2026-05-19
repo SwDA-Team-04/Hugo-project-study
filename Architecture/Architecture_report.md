@@ -10,10 +10,10 @@ Scope: the Hugo static site generator, focusing on the main Hugo CLI binary and 
 As a static website generator (SSG), Hugo acts as a high-speed compilation engine. Located at the heart of the ecosystem, it takes content and design resources as input, acquires the necessary remote dependencies, and outputs a fully static, directly deployable website.
 
 ### 1.2 Actors & Roles
-**Content Actor**:Principal content creator. Focuses on writing Markdown files and providing static media materials.
-**Theme Developer**:They are responsible for visual presentation and user interface logic. They use HTML, CSS, JavaScript, and Go template syntax to build reusable templates.
-**Site Administrator**:Manage global configurations, version control, and CI/CD pipelines to ensure automated builds and deployments.
-**End user**:The end-users of the website. Crucially, the end-users are completely decoupled from the Hugo runtime system. They interact only with external web hosting/CDN, which provides the system with superior security and performance.
+* **Content Actor**:Principal content creator. Focuses on writing Markdown files and providing static media materials.
+* **Theme Developer**:They are responsible for visual presentation and user interface logic. They use HTML, CSS, JavaScript, and Go template syntax to build reusable templates.
+* **Site Administrator**:Manage global configurations, version control, and CI/CD pipelines to ensure automated builds and deployments.
+* **End user**:The end-users of the website. Crucially, the end-users are completely decoupled from the Hugo runtime system. They interact only with external web hosting/CDN, which provides the system with superior security and performance.
 
 ### 1.3 External System
 **Version System**:(eg:Github) Stores project source files and triggers automated CI/CD builds.
