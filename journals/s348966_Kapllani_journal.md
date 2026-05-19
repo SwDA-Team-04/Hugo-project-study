@@ -7,3 +7,4 @@
 | 11 May 2026 |  Continued reading the code, analyzed fan-in and fan-out metrics for key files and wriote down notes. | Design | 3h |
 | 17 May 2026 | Finalized my work's format and reviewed technical language to present the next day to my teammates. | Design | 1h |
 | 18 May 2026 | Met with the Design sub-group to show each other our work and get feedback. | Design | 1.5h |
+| 19 May 2026 | Met with Elena to cross-reference static and evolutionary dependencies, mapping out the inconsistencies for Section 1.4. | Design | 2h |
