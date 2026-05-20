@@ -85,68 +85,32 @@ Despite the two cases discussed above, the comparison shows an overall coherence
 • Why is the pattern used? Which problem does solve?
 • Is there an alternative, what would be pros & cons?]
 
-### Decorator Pattern
-
-Decorator pattern allows to wrap an element in a decorator object to add extra features without modify the original element.
-
-#### Who and where?
-
-In `hugofs` package, `decorators.go` contains a lot of decorators. One of them is `NewBaseFileDecorator`,which is a decorator for Filesystems. The Filesystem is wrapped in a `baseFileDecoratorFs` struct, this allows to add an Opener function without modifying the underlying Fs.
-
-#### Why?
-
-Thanks to this operation, it's possibile to open a Filesystem using the function specified in `NewBaseFileDecorator`, that means that a new behavior is been added but the original Filesystem structure is not been modified.
-
-#### A possible alternative
-
-One possible alternative could be to modify the function to open the Fs already provided in `Filesystem` interface but in the project Fs are handled using an external library (`afero`), is not possible to do it unless `afero` library is no more used.
-
-##### Pros:
-
-The method in the interface can be freely implemented without limitation. Additionally, there wolud be one less dependency.
-
-##### Cons:
-
-It will require a substantial effert to reimplement all the feaures alredy provided by the library and it would require maintenance effort too.
-
 ### Builder Pattern
 
-This pattern is used to generate a table of contents (toc) by initially setting some paramethers and build it when all parameters are setted.
+The Builder pattern is used to construct a table of contents by setting parameters incrementally and building it once all parameters are set. In `tablesofcontents/tableofcontents.go`, the `Builder` struct plays the role of the builder, providing methods like `SetIdentifiers()` and `AddAt()` to configure the table step by step. The `Transform()` function in `markup/goldmark/toc.go` uses this pattern to set identifiers (line 62), add headings (line 71), and finally build the complete table (line 132).
 
-#### Who and where?
+This approach is useful when the construction process involves multiple steps and intermediate configurations, allowing the code to remain readable and flexible without requiring a single method with many parameters. 
 
-In `tablesofcontents/tableofcontents.go` file, the function to build the toc is specified as well as the funcions to set paramethers. The `Transform` function in `markup/goldmark/toc.go` file use the pattern to set the identifiers (line 62), then adds the heading to the table (line 71) and after these operations, it builds the table at line 132.
+An alternative would be a factory function like `func Build(ids []string, h *Heading, row, level int) ToC`, which would be simpler for cases with few parameters and would eliminate the need to distribute construction logic across multiple function calls. However, the Builder pattern is more appropriate here because it provides clearer separation of concerns and scales better if more configuration steps are added in the future.
 
-#### Why?
 
-This pattern allows to build the object one step at time, without use a giant builder at which all the paramethers are provided.
+### Decorator Pattern
 
-#### A possible alternative
+The Decorator pattern wraps an object to add behavior without changing its original implementation. In `hugofs/decorators.go` this is used to extend an `afero.Fs`: `NewBaseFileDecorator` returns a `baseFileDecoratorFs` that transparently decorates files and directories, supplying extra metadata, an `Opener` function and `JoinStatFunc` for directories while leaving the underlying `afero` filesystem unchanged.
 
-As said, this pattern avoid to user big builder method with a lot of parameters. In this case the parmeters setted are only two so the table of contents could as be build using a "traditional" builer like `func Build(ids []string, h *Heading, row, level int) {//set params and return the ToC}`
+This pattern solves the problem of attaching project-specific behavior and metadata to third‑party types without forking or modifying the external library. It keeps the extension localized: callers can open files via the provided opener and access enriched file info, and the core `afero` implementation remains untouched.
 
-##### Pros:
+One alternative is to modify the function to open filesystems directly through the native interface. While this removes an external dependency and allows for unlimited implementation freedom, it requires replacing the current `afero` library. This transition would demand substantial effort to both reimplement existing features and maintain the new custom solution.
 
-In this example the params are only a few so they are easy to manage and could be helpful to not distribute the constrution of the table through multiple functions.
-
-##### Cons:
-
-The cons are that you have to prepare all the parameters in and then call the builder after.
 
 ### Prototype Pattern
 
-#### Who and where?
+The Prototype pattern is used to create new objects by cloning an existing instance and then modifying the clone.  In `tpl/internal/go_templates/htmltemplate/template.go`, the Template type plays the role of the prototype, and `Template.Clone()` creates a copy that can be extended with variant definitions
 
-TO DO
-`func (t *Template) Clone() (*Template, error) ` in `tpl\internal\go_templates\template.go` file...
+This approach is useful when creating an object from scratch would be more expensive or more verbose than duplicating an existing one. It also makes it easy to reuse a common base template while customizing only the parts that change.
 
-#### Why?
+An alternative could be a factory function that creates a new template with a predefined configuration and then adds the variants to it. This would be simpler and clearer if the goal were only to centralize object creation. However, the Prototype pattern is a better fit here because the code needs to duplicate an already initialized template and then customize the copy.
 
-#### A possible alternative
-
-##### Pros:
-
-##### Cons:
 
 ## 3. Summary
 

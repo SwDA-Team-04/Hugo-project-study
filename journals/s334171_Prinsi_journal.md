@@ -6,3 +6,4 @@
 | 16 May 2026 | Runned the project to undestand how hugo.io works, then started to look for design patterns. ~~Identified 3 patterns since now~~ (~~Observer, Singleton and~~ Decorator). | Design - Section #2 | 6h |
 | 18 May 2026 | Identified two more patterns (Builder and Prototype pattern). Write down Builder patter. | Design - Section #2 | 1h |
 | 18 May 2026 | Meeting with Design sub-group to show the results of our individual work and establish the next step to follow. | Design | 1.5h |
+| 20 May 2026 | Wrote the Prototype pattern, removed sub-sections from the previous pattern, rearranged and enhanced the explanations. | Design - Section #2 | 3.5h |
