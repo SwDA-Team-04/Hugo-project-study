@@ -85,6 +85,18 @@ Despite the two cases discussed above, the comparison shows an overall coherence
 • Why is the pattern used? Which problem does solve?
 • Is there an alternative, what would be pros & cons?]
 
+### Adapter Pattern
+
+//TO FINISH 
+In `hugolib/hugo_sites.go`
+
+`
+type hugoSitesSitesProvider struct {
+	h *HugoSites
+}
+`
+Is an adapter since it does not add extra feature, just avoid conflict in naming. 
+
 ### Builder Pattern
 
 The Builder pattern is used to construct a table of contents by setting parameters incrementally and building it once all parameters are set. In `tablesofcontents/tableofcontents.go`, the `Builder` struct plays the role of the builder, providing methods like `SetIdentifiers()` and `AddAt()` to configure the table step by step. The `Transform()` function in `markup/goldmark/toc.go` uses this pattern to set identifiers (line 62), add headings (line 71), and finally build the complete table (line 132).
@@ -96,7 +108,7 @@ An alternative would be a factory function like `func Build(ids []string, h *Hea
 
 ### Decorator Pattern
 
-The Decorator pattern wraps an object to add behavior without changing its original implementation. In `hugofs/decorators.go` this is used to extend an `afero.Fs`: `NewBaseFileDecorator` returns a `baseFileDecoratorFs` that transparently decorates files and directories, supplying extra metadata, an `Opener` function and `JoinStatFunc` for directories while leaving the underlying `afero` filesystem unchanged.
+The Decorator pattern wraps an object to add behavior without changing its original implementation. In `hugofs/decorators.go` this is used to extend an `afero.Fs`: `NewBaseFileDecorator` returns a `baseFileDecoratorFs` that transparently decorates files and directories, supplying extra metadata, an `Opener` function and `JoinStatFunc` function for directories while leaving the underlying `afero` filesystem unchanged.
 
 This pattern solves the problem of attaching project-specific behavior and metadata to third‑party types without forking or modifying the external library. It keeps the extension localized: callers can open files via the provided opener and access enriched file info, and the core `afero` implementation remains untouched.
 
@@ -105,7 +117,7 @@ One alternative is to modify the function to open filesystems directly through t
 
 ### Prototype Pattern
 
-The Prototype pattern is used to create new objects by cloning an existing instance and then modifying the clone.  In `tpl/internal/go_templates/htmltemplate/template.go`, the Template type plays the role of the prototype, and `Template.Clone()` creates a copy that can be extended with variant definitions
+The Prototype pattern is used to create new objects by cloning an existing instance and then modifying the clone.  In `tpl/internal/go_templates/htmltemplate/template.go`, the Template type plays the role of the prototype, and `Template.Clone()` creates a copy that can be extended with variant definitions.
 
 This approach is useful when creating an object from scratch would be more expensive or more verbose than duplicating an existing one. It also makes it easy to reuse a common base template while customizing only the parts that change.
 
