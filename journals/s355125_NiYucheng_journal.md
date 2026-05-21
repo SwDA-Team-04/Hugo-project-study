@@ -5,3 +5,5 @@
 | 03 May 2026   | Meeting with the Architecture sub-group to start together the report. We decide to use Structurizr for C4 model | Design       | 1h     |
 | 17 May 2026   | conducted an in-depth study of Hugo's core architecture, fully grasping its characteristics as a Static Site Generator (SSG) that decouples the build-time engine from the runtime server. | architecture       | 3h     |
 | 19 May 2026   | Completed the C4 Context Diagram and its documentation using Draw.io, mapping out all core roles and external system dependencies. | architecture       | 3h     |
+| 20 May 2026   | advanced to C4 Level 2 (Container Diagram) and successfully mapped out Hugo's 5 core internal modules using Draw.io. | architecture       | 2h     |
+| 21 May 2026   | Completed the C4 Container Diagram and its documentation using Draw.io. | architecture       | 3h     |
