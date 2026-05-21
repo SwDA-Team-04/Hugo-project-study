@@ -22,7 +22,7 @@ As a static website generator (SSG), Hugo acts as a high-speed compilation engin
 * **Go Proxy / Hugo Modules**：Hugo downloads the package management registry of external themes and component dependencies during compilation.
 
 ## 2. Container level
-![](diagrams/Hugo-Container-Level.png)
+![](diagrams/Hugo-Container-Level-update.png)
 At the container level, Hugo is modeled as a single deployable command-line application with supporting local storage containers. This representation reflects the actual architectural nature of the system: Hugo is not a distributed web application composed of independently deployed services, but a modular monolithic static site generator executed locally by a site author or developer.
 
 The central container is the **Hugo Executable**. It is the main runtime unit of the system and is implemented in Go. It exposes the command-line interface used to run build, server, module, new-site, and deployment-related commands. Internally, this executable coordinates the complete generation process: it reads project files, loads configuration, resolves content and layouts, processes resources, renders templates, writes the generated website, and optionally starts a local development server.
