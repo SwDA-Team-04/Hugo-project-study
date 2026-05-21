@@ -23,18 +23,18 @@ As a static website generator (SSG), Hugo acts as a high-speed compilation engin
 
 ## 2. Container level
 ![](diagrams/Hugo-Container-Level-update.png)
-At the container level, Hugo is modeled as a single deployable command-line application with supporting local storage containers. This representation reflects the actual architectural nature of the system: Hugo is not a distributed web application composed of independently deployed services, but a modular monolithic static site generator executed locally by a site author or developer.
+### 2.1 overview
+The container diagram zoomed into show the boundaries of the Hugo system. Unlike traditional web applications, Hugo is a monolithic command-line interface (CLI) application written entirely in Go. Therefore, the "containers" in the diagram do not represent individual microservices or databases, but rather the highest-level logical modules (packages) in the Hugo binary responsible for coordinating the build lifecycle.
 
-The central container is the **Hugo Executable**. It is the main runtime unit of the system and is implemented in Go. It exposes the command-line interface used to run build, server, module, new-site, and deployment-related commands. Internally, this executable coordinates the complete generation process: it reads project files, loads configuration, resolves content and layouts, processes resources, renders templates, writes the generated website, and optionally starts a local development server.
-
-In this diagram, only the Hugo Executable is a deployable software container in the strict sense. The **Resource Cache** and the **Generated Public Site** are modeled as data stores because they are persistent filesystem-based artifacts used or produced by the executable. They are included in the container view because they are architecturally relevant to Hugo's build-time behavior.
-
-The **Hugo Project Workspace** is modeled as an external data store because it is not part of the Hugo executable itself, but it is essential for its operation. It contains the input artifacts of a Hugo site, including configuration files, Markdown content, layouts, assets, static files, data files, i18n resources, and theme-related files. Hugo reads these artifacts during the build process and interprets them as the source model of the website.
-
-Hugo also interacts with several external systems. **Module and Theme Repositories** provide reusable Hugo Modules and themes, usually fetched through Git or Go module mechanisms. The **Asset Toolchain** represents optional external processors such as Dart Sass, PostCSS, Tailwind, or esbuild, which may be invoked when the project configuration requires them. A **Development Browser** interacts with the Hugo Executable through HTTP when the local development server is running. Finally, a **Hosting / Deployment Platform** receives the generated static website and serves it to Website Visitors.
-
-This container view shows that Hugo follows a modular monolithic architectural style. Its major responsibilities are packaged into a single executable, while input, cache, and output are separated through filesystem-based data stores. The main communication style is local and synchronous: the user invokes commands, the executable reads and writes files, and optional preview traffic is served over HTTP during development.
-
+### 2.2 Core Container
+The internal architecture is divided into five core components that form a high-speed compilation pipeline:
+* **CLI Interface**:The entry point of the system. It parses user commands (e.g. hugo build hugo server) and routes them to the appropriate internal engines.
+* **Configuration Manager**:Initializes the system by reading and parsing global project settings from hugo.toml or yaml files from the Version Control System.
+* **Content & Template Parser**:A dual-purpose module. It reads Markdown files, converting them into an Abstract Syntax Tree (AST) using the Goldmark engine, while simultaneously parsing HTML/Go templates. It is also responsible for fetching dynamic data from External APIs.
+* **Core Render Engine**:The core of Hugo's performance. It utilizes Go's powerful concurrency model (Goroutines) to merge parsed content and templates into the final HTML structures at extreme speeds.
+* **Output**:It is responsible for the final output. In production mode, it writes static files to the `public/` directory for deployment to a web host/CDN. In development mode, it starts a local server with live reload capabilities.
+### 2.3 Data Flow and Interactions
+This system employs a highly efficient, one-way build pipeline. The process begins with the user executing a CLI command, which triggers the configuration manager to initialize the system, retrieve settings, and apply global rules. Once initialization is complete, the content and template parsers collect and process all raw input, including Markdown files, layout templates, and dynamic API data. These parsed resources are immediately passed to the core rendering engine, which leverages Go's powerful concurrency to quickly merge the Abstract Syntax Tree (AST) and templates into the final HTML structure. Finally, the output module takes over the remaining work, delivering these fully generated static artifacts directly to an external web hosting infrastructure for global distribution.
 ## 3. Component level – Hugo CLI binary
 ![](diagrams/Hugo-Component-Level.png)
 The component diagram focuses on the **Hugo Executable** container, which is the main runtime unit of the system. Since Hugo is distributed as a single command-line application rather than as a set of independently deployed services, the components in this view represent logical source-code and runtime responsibilities inside the executable.
