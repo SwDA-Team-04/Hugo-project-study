@@ -36,7 +36,7 @@ The internal architecture is divided into five core components that form a high-
 ### 2.3 Data Flow and Interactions
 This system employs a highly efficient, one-way build pipeline. The process begins with the user executing a CLI command, which triggers the configuration manager to initialize the system, retrieve settings, and apply global rules. Once initialization is complete, the content and template parsers collect and process all raw input, including Markdown files, layout templates, and dynamic API data. These parsed resources are immediately passed to the core rendering engine, which leverages Go's powerful concurrency to quickly merge the Abstract Syntax Tree (AST) and templates into the final HTML structure. Finally, the output module takes over the remaining work, delivering these fully generated static artifacts directly to an external web hosting infrastructure for global distribution.
 ## 3. Component level 
-![](diagrams/Hugo-Component-Level.png)
+![](diagrams/Hugo-Component-Level-update.png)
 ### 3.1 Zooming into the Parser Container
 To demonstrate the low-level architectural execution, this section zooms into the Content & Template Parser container. The component breakdown was derived by reverse-engineering Hugo's open-source Go repository and analyzing its core build lifecycle, emphasizing how it isolates third-party dependencies from core logic.
 ### 3.2 Internal Components
