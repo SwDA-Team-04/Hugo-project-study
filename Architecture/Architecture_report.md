@@ -46,6 +46,14 @@ To demonstrate the low-level architectural execution, this section zooms into th
 * **Remote Data Fetcher ([Component: Go / resources/page])**:The dynamic integration layer. It executes build-time HTTP requests to fetch external API data, seamlessly merging live data into the static compilation pipeline without relying on client-side fetching.
 ### 3.3 Data Flow and Build Pipeline
 This component layer illustrates a highly decoupled, unidirectional workflow. It initiates as the **Front Matter Parser** and **Markdown Engine** ingest raw source files from the VCS. Metadata is routed directly to the **Template Executor**, while the text is parsed into an HTML AST. Concurrently, the **Remote Data Fetcher** retrieves external JSON data and passes it upwards. All these isolated data streams (Metadata, HTML AST, Global Config, and API Data) converge at the **Template Executor**. Acting as the master assembly hub, it merges these discrete data objects into the VCS layouts, delivering a fully resolved data structure to the external **Core Render Engine (Goroutine)** for final compilation.
+### 3.3 Methodology: Container Selection
+According to C4 model guidelines, breaking down every container into components causes architectural clutter. This analysis strategically zooms only into the Content & Template Parser container.
+#### Why the Parser?
+It is the algorithmic brain of Hugo, integrating heterogeneous data (Markdown, Layouts, APIs) and demonstrating complex patterns like lexical scanning and adapter wrapping (Goldmark). It represents the core business logic.
+#### Why exclude the others?
+* CLI Interface & Configuration Manager: These act as single-purpose utilities (routing and dictionary aggregation) lacking complex data transformations.
+* Core Render Engine: Its complexity lies in Go's Goroutine concurrency execution model, which is better described through behavioral models rather than structural component diagrams.
+* Output: A strictly I/O-bound module focused on file system operations, offering minimal structural insights.
 
 ## 4. Relationship with Clean Architecture
 
