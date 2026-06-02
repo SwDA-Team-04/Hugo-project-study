@@ -5,7 +5,7 @@ Diagram tool: draw.io
 Scope: the Hugo static site generator, focusing on the main Hugo CLI binary and its internal package-level components.
 
 ## 1. Context level
-![](diagrams/Hugo-System-Context-update.png)
+![](diagrams/Hugo-System-Context-update2.png)
 ### 1.1 Hugo
 As a static website generator (SSG), Hugo acts as a high-speed compilation engine. Located at the heart of the ecosystem, it takes content and design resources as input, acquires the necessary remote dependencies, and outputs a fully static, directly deployable website.
 
@@ -22,7 +22,7 @@ As a static website generator (SSG), Hugo acts as a high-speed compilation engin
 * **Go Proxy / Hugo Modules**：Hugo downloads the package management registry of external themes and component dependencies during compilation.
 
 ## 2. Container level
-![](diagrams/Hugo-Container-Level-update.png)
+![](diagrams/Hugo-Container-Level-update2.png)
 ### 2.1 overview
 The container diagram zoomed into show the boundaries of the Hugo system. Unlike traditional web applications, Hugo is a monolithic command-line interface (CLI) application written entirely in Go. Therefore, the "containers" in the diagram do not represent individual microservices or databases, but rather the highest-level logical modules (packages) in the Hugo binary responsible for coordinating the build lifecycle.
 
@@ -36,7 +36,7 @@ The internal architecture is divided into five core components that form a high-
 ### 2.3 Data Flow and Interactions
 This system employs a highly efficient, one-way build pipeline. The process begins with the user executing a CLI command, which triggers the configuration manager to initialize the system, retrieve settings, and apply global rules. Once initialization is complete, the content and template parsers collect and process all raw input, including Markdown files, layout templates, and dynamic API data. These parsed resources are immediately passed to the core rendering engine, which leverages Go's powerful concurrency to quickly merge the Abstract Syntax Tree (AST) and templates into the final HTML structure. Finally, the output module takes over the remaining work, delivering these fully generated static artifacts directly to an external web hosting infrastructure for global distribution.
 ## 3. Component level 
-![](diagrams/Hugo-Component-Leve-update.png)
+![](diagrams/Hugo-Component-Level-update2.png)
 ### 3.1 Zooming into the Parser Container
 To demonstrate the low-level architectural execution, this section zooms into the Content & Template Parser container. The component breakdown was derived by reverse-engineering Hugo's open-source Go repository and analyzing its core build lifecycle, emphasizing how it isolates third-party dependencies from core logic.
 ### 3.2 Internal Components
