@@ -9,3 +9,4 @@
 | 20 May 2026 | Wrote the Prototype pattern, removed sub-sections from the previous pattern, rearranged and enhanced the explanations. | Design - Section #2 | 3.5h |
 | 21 May 2026 | Identified last pattern (Adapter pattern). The research focused on finding a structural or a behavioral pattern, since there are already two creational patterns. Then added the code references. | Design - Section #2 | 2.5h |
 | 03 June 2026 | Write Adapter pattern and draft Summary section. | Design - Section #2/#3 | 2h |
+| 05 June 2026 | Meeting with Elena and Kiara to write down the Overview structure and divide the work. Also checked the Architecture report and provided feedbacks about it. | Overview | 2h |
