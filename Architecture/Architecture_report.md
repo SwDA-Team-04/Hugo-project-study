@@ -1,7 +1,6 @@
 # Hugo — Architecture Report
 
-Report part: Architecture  
-Diagram tool: draw.io
+Diagram tool: draw.io  
 Scope: the Hugo static site generator, focusing on the Hugo software system, its main build pipeline, and the internal structure of the Content & Template Parser.
 
 ## 1. Context level
