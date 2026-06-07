@@ -9,3 +9,4 @@
 | 18 May 2026 | Met with the Design sub-group to show each other our work and get feedback. | Design | 1.5h |
 | 19 May 2026 | Met with Elena to cross-reference static and evolutionary dependencies, mapping out the inconsistencies for Section 1.4. | Design | 2h |
 | 05 June 2026 | Met with Elena and Luca to write down the Overview structure and divide the work. Also checked the Architecture report and provided feedback about it. | Overview | 2h |
+| 07 June 2026 | Wrote sections 5-6 in the overview's report | Overview | 1.5h |
