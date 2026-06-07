@@ -81,17 +81,37 @@ Therefore, Hugo only partially matches Clean Architecture. It shows a recognizab
 
 
 ## 5. SOLID observations at component level
+### 5.1 Overview
+Although Go is not a traditional class-based Object-Oriented language, its idiomatic design relies heavily on small interfaces, package encapsulation, and composition. When analyzing the Content & Template Parser container, it is evident that Hugo's source code architecture strongly adheres to the **SOLID** principles.
 
-**SRP.** Most top-level packages are cohesive: `markup` changes for content rendering, `resources` for asset processing, `tpl` for templates, `deploy` for deployment, and `watcher/livereload` for development feedback. The main SRP risk is `commands/hugobuilder.go`: it coordinates build, server, profiling, static file sync, rebuild, and live reload concerns. As an application orchestrator this is acceptable, but it is a change hotspot.
+### 5.2 Single Responsibility Principle - SRP
+**Principle:** A module should have one, and only one, reason to change.
 
-**OCP.** Hugo is moderately open to extension through modules, templates, output formats, markup configuration, and asset pipelines. However, adding a new deep build feature or a new core content dimension generally requires modifying `hugolib` and adjacent packages. Therefore OCP is well supported at the user/project level, but only partially at the internal architecture level.
+Hugo achieves extreme SRP by isolating distinct parsing phases into independent packages.
+* **Observation**: The **parser/pageparser** component is solely responsible for lexical scanning and stripping Front Matter. It does not know how to render Markdown. If the **TOML** syntax specification changes in the future, only the pageparser package needs to be updated. Similarly, the **resources/page** component has the single responsibility of executing network fetches, completely isolated from content parsing.
 
-**LSP.** No clear LSP violation was observed at C4 level 3. The use of public interfaces such as site/page abstractions suggests substitutability is considered, but this should be verified with class/interface-level design analysis if needed.
+### 5.3 Open/Closed Principle - OCP
+**Principle:** Software entities should be open for extension, but closed for modification.
 
-**ISP.** There is a possible ISP risk around large interfaces and broad template-function namespaces: clients may depend on wide APIs even when they use only a subset. The architecture partly mitigates this by organizing template functions into namespaces such as `resources`, `page`, `site`, `strings`, `urls`, and others.
+Hugo heavily relies on third-party libraries while maintaining its own rich feature set through extension.
+* **Observation:** The **markup/goldmark** component is a textbook application of OCP. Hugo does not modify the source code of the underlying **goldmark** library to add its custom features (like Shortcodes or Chroma syntax highlighting). Instead, the underlying engine remains closed for modification, while Hugo implements Go interface extensions (AST node renderers) to inject its custom logic, keeping the system open for extension.
 
-**DIP.** Hugo uses abstractions for pages, sites, filesystems, resources, and rebuild signaling. Still, package dependencies frequently point from central components to concrete helper/config/filesystem packages. DIP is applied selectively, not universally.
+### 5.4 Liskov Substitution Principle - LSP
+**Principle:** Subtypes must be substitutable for their base types without altering the correctness of the program.
 
+In Go, where explicit inheritance does not exist, LSP is achieved through implicit interfaces. Any type that implements the methods of an interface is a valid substitute.
+* **Observation:** The Template Executor (**tpl**) perfectly demonstrates LSP in action. When the executor finishes rendering an HTML page, it does not write to a concrete **os.File** object. Instead, it writes to an abstract io.Writer interface. During a production build (**hugo build**), Hugo substitutes this interface with a physical file stream. During local development (**hugo server**), Hugo substitutes it with an in-memory buffer for lightning-fast Live Reloads. Because both the file stream and the memory buffer properly implement **io.Writer**, they can substitute each other perfectly without requiring a single line of code change in the **Template Executor**.
+
+### 5.5 Interface Segregation Principle - ISP
+**Principle:** Clients should not be forced to depend on interfaces they do not use.
+
+* **Observation:** Look at the Front Matter Parser (**pageparser**). When it reads a Markdown file to slice off the TOML metadata, it does not demand a massive **HugoDocument** interface that includes irrelevant methods like **RenderToHTML()** or **Publish()**. Instead, it only requires a tiny, segregated interface: **io.Reader** (which only has a **Read()** method). The parser only cares about reading bytes. By aggressively segregating interfaces, Hugo ensures that its parser component remains highly focused, decoupled, and immune to changes in unrelated parts of the system.
+
+### 5.6 Dependency Inversion Principle - DIP
+**Principle:** Depend on abstractions, not concretions.
+
+This principle is about protecting the core domain from external volatility.
+* **Observation:** The **markup/goldmark** directory acts as an adapter. The central **hugolib** orchestrator does not depend directly on the concrete third-party Goldmark engine. Instead, it depends on internal abstractions and interfaces defined by Hugo. The adapter implements these interfaces. This dependency inversion ensures that if a radically different Markdown parser emerges in the future, the core Hugo engine will not require rewrites.
 ## 6. Architectural characteristics and metrics-based reasoning
 
 **Performance and responsiveness.** These are primary drivers. Hugo’s architecture avoids runtime page generation for visitors: it performs all expensive work at build time. The local build pipeline uses caching, resource caches, parallelism, incremental rebuild logic, and fast render behavior. The trade-off is higher internal complexity in the compiler and orchestrator.
