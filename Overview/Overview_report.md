@@ -35,15 +35,15 @@ Hugo's ecosystem and its lifecycle are defined by four main stakeholder groups, 
 At a high level, Hugo works as a build-time pipeline where each component of the system perform its job before passing the result to the next stage.  
 The process flows through five main components, each responsible for a specific part of the pipeline:
 
-- CLI Interface, this is where everything starts. When the user runs a command like `hugo build` or `hugo server`, the CLI reads the input and initiates the build pipeline by delegating work passes control to the rest of the system.
+- **CLI Interface:** this is where everything starts. When the user runs a command like `hugo build` or `hugo server`, the CLI reads the input and initiates the build pipeline by delegating work passes control to the rest of the system.
 
-- Configuration Manager, it reads the project configuration file (TOML, YAML, or JSON) and sets up all the global settings. It also handles downloading external themes or modules if needed.
+- **Configuration Manager:** it reads the project configuration file (TOML, YAML, or JSON) and sets up all the global settings. It also handles downloading external themes or modules if needed.
 
-- Content & Template Parser, this component processes all the raw source files: it pulls out the metadata from each page, turns the Markdown text into HTML, and loads all the layout files and templates that will be used during rendering.
+- **Content & Template Parser:** this component processes all the raw source files: it pulls out the metadata from each page, turns the Markdown text into HTML, and loads all the layout files and templates that will be used during rendering.
 
-- Core Render Engine, this is the part that actually builds the pages. It takes everything prepared by the parser and combines content with templates to produce the final HTML. Pages are generated in parallel using Goroutines, which is why Hugo is so fast even on large sites.
+- **Core Render Engine:** this is the part that actually builds the pages. It takes everything prepared by the parser and combines content with templates to produce the final HTML. Pages are generated in parallel using Goroutines, which is why Hugo is so fast even on large sites.
 
-- Output, the last step in the pipeline. It writes the generated files to the public folder so they can be deployed. In development mode, it also runs a local server with live reload so changes are immediately visible in the browser.
+- **Output:** the last step in the pipeline. It writes the generated files to the public folder so they can be deployed. In development mode, it also runs a local server with live reload so changes are immediately visible in the browser.
 
 
 ## 5. Repository Statistics
