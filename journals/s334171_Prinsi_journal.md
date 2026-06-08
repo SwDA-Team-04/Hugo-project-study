@@ -11,3 +11,4 @@
 | 03 June 2026 | Write Adapter pattern and draft Summary section. | Design - Section #2/#3 | 2h |
 | 05 June 2026 | Meeting with Elena and Kiara to write down the Overview structure and divide the work. Also checked the Architecture report and provided feedbacks about it. | Overview | 2h |
 | 06 June 2026 | Write System description in overview report. | Overview - Section #4 | 1.5h |
+| 08 June 2026 | Meeting with Elena and Kiara to review the Overview and define the final improvements. Then refactored Section 4 to shorten it and updated the README. | Overview - Section #4 & README | 1.5h |
