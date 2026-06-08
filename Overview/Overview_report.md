@@ -11,9 +11,8 @@
 Hugo is one of the most popular open-source frameworks in the **Static Site Generation** domain. Developed using Go, it's designed to operate as a compilation tool at build-time: it takes plain Markdown files and layout structures (HTML templates) as inputs, compiling them into a fully static website composed of HTML, CSS, and JavaScript files, immediately ready for distribution. Structurally, Hugo is engineered as a **modular monolith**, distributed as a single lightweight executable. It represents an alternative to the traditional Content Management Systems, which assemble web pages dynamically at runtime based on real-time user requests.
 
 ## 2. Purpose of the System
-The purpose of the system is to provide a high performance web compilation engine, able to eliminate the bottlenecks typical of dynamic CMSs.
 ### 2.1 Main Objectives
-The core goal is to minimize site compilation time. This is achieved through the **Go language** efficiency and the use of **concurrency via Goroutines**, allowing the system to generate thousands of pages in fractions of a second, leading the project to describe itself as **"the world’s fastest framework for building websites"**.
+The core objective of the system is to provide a high-performance web compilation engine, capable of eliminating the bottlenecks typical of dynamic CMSs, with a specific focus on minimizing site compilation time. This efficiency is achieved through the **Go language** architecture and the use of **concurrency via Goroutines**, allowing the system to generate thousands of pages in fractions of a second, leading the project to describe itself as **"the world’s fastest framework for building websites"**.
 ### 2.2 Typical Use Cases
 Hugo is widely used for:
 - **Large-scale technical documentation:** company portals or open-source projects that host thousands of documentation pages requiring instant loading times.
