@@ -1,18 +1,25 @@
 # SDA Project 2026 - Team 4
 
-Hi! We are a team of Software Engineering students at Politecnico di Torino. We performed a reverse-engineering analysis of a public project available on GitHub to understand the software architecture and design of a real project.
+Hi! We are a team of Software Engineering students at Politecnico di Torino. We performed a reverse-engineering analysis of a public project available on GitHub to understand the software architecture and design of a real system.
 
-The system we chose is Hugo: https://github.com/gohugoio/hugo
+The system we chose is Hugo, a fast and flexible static site generator built by [bep](https://github.com/bep), [spf13](https://github.com/spf13) and other [contributors](https://github.com/gohugoio/hugo/graphs/contributors).  
+[Click here to see the official repository](https://github.com/gohugoio/hugo)
 
-We produced three reports:
+## Reports
 
-- Overview Report: [Overview Report](Overview/Overview_report.md)
-- Design Report: [Design Report](Design/Design_report.md)
-- Architecture Report: [Architecture Report](Architecture/Architecture_report.md)
+- **Overview**: [Overview Report](Overview/Overview_report.md)
+- **Design**: [Design Report](Design/Design_report.md)
+- **Architecture**: [Architecture Report](Architecture/Architecture_report.md)
 
-Authors:
+## Authors:
+
 - s334171 Prinsi Luca
 - s345376 Lubrano Elena
 - s348966 Kapllani Kiara
 - s352256 Wang Shili
 - s355125 Ni Yucheng
+
+## License
+
+[Apache-2.0 license](LICENSE)
+
