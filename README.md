@@ -3,7 +3,7 @@
 Hi! We are a team of Software Engineering students at Politecnico di Torino. We performed a reverse-engineering analysis of a public project available on GitHub to understand the software architecture and design of a real system.
 
 The system we chose is Hugo, a fast and flexible static site generator built by [bep](https://github.com/bep), [spf13](https://github.com/spf13) and other [contributors](https://github.com/gohugoio/hugo/graphs/contributors).  
-[Click here to see the official repository](https://github.com/gohugoio/hugo)
+[Click here to see the official repository.](https://github.com/gohugoio/hugo)
 
 ## Reports
 
@@ -21,5 +21,5 @@ The system we chose is Hugo, a fast and flexible static site generator built by 
 
 ## License
 
-[Apache-2.0 license](LICENSE)
+These reports are licensed under [CC BY 4.0](LICENSE).
 
