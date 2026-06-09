@@ -9,4 +9,4 @@
 | 21 May 2026   | Completed the C4 Container Diagram and its documentation using Draw.io. | architecture       | 3h     |
 | 26 May 2026   | Completed the C4 Component Diagram and its documentation using Draw.io. | architecture       | 3h     |
 | 28 May 2026   | change the diagram by feedback. | architecture       | 3h     |
-| 4 June 2026   | Completed the C4 Container Diagram and its documentation using Draw.io. | architecture       | 3h     |
+| 4 June 2026   | rewrite the section on SOLID, adding more details. | architecture       | 3h     |
