@@ -7,3 +7,6 @@
 | 19 May 2026   | Completed the C4 Context Diagram and its documentation using Draw.io, mapping out all core roles and external system dependencies. | architecture       | 3h     |
 | 20 May 2026   | advanced to C4 Level 2 (Container Diagram) and successfully mapped out Hugo's 5 core internal modules using Draw.io. | architecture       | 2h     |
 | 21 May 2026   | Completed the C4 Container Diagram and its documentation using Draw.io. | architecture       | 3h     |
+| 26 May 2026   | Completed the C4 Component Diagram and its documentation using Draw.io. | architecture       | 3h     |
+| 28 May 2026   | change the diagram by feedback. | architecture       | 3h     |
+| 4 June 2026   | Completed the C4 Container Diagram and its documentation using Draw.io. | architecture       | 3h     |
