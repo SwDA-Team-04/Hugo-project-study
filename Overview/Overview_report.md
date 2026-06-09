@@ -47,6 +47,8 @@ The process flows through five main components, each responsible for a specific 
 
 ## 5. Repository Statistics
 
+> The statistics are updated as of June 7, 2026.
+
 Hugo was first released on `July 5, 2013`, giving it over 12 years of active history. The project is open source and free to use. It is distributed under the `Apache 2.0 License`. At the time of writing, the repository counts approximately `88,400` stars and over `8,300` forks on GitHub, placing it among the most followed Go projects overall. The latest version is `0.162.1`, with frequent releases throughout the project's history. 
 
 Hugo is written in `Go`, optimized for speed and designed for flexibility. The codebase consists of `890` Go source files, for a total of approximately `190,260` lines of code, distributed across `238` packages.
