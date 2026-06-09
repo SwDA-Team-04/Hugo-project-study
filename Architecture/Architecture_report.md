@@ -4,7 +4,7 @@ Diagram tool: draw.io
 Scope: the Hugo static site generator, focusing on the Hugo software system, its main build pipeline, and the internal structure of the Content & Template Parser.
 
 ## 1. Context level
-![](diagrams/Hugo-System-Context-update3.png)
+![](diagrams/Hugo-System-Context.png)
 ### 1.1 Hugo
 As a static website generator (SSG), Hugo acts as a high-speed compilation engine. Located at the heart of the ecosystem, it takes content and design resources as input, acquires the necessary remote dependencies, and outputs a fully static, directly deployable website.
 
@@ -23,7 +23,7 @@ As a static website generator (SSG), Hugo acts as a high-speed compilation engin
 The context diagram highlights that Hugo is a build-time system rather than a production runtime system. After the generated files are deployed, the Web Hosting / CDN is responsible for serving the site.
 
 ## 2. Container level
-![](diagrams/Hugo-Container-Level-update3.png)
+![](diagrams/Hugo-Container-Level.png)
 ### 2.1 overview
 The container diagram zooms into the Hugo software system and shows the main high-level runtime responsibilities inside the generator. Hugo is not a distributed microservice system; it is a monolithic command-line application written in Go. Therefore, the containers in this view represent major logical runtime units inside the Hugo build pipeline rather than independently deployed services.
 
@@ -44,7 +44,7 @@ After parsing, the structured content and templates are passed to the **Core Ren
 This view shows Hugo as a pipeline-oriented modular monolith. Its components are tightly integrated in a single executable, but the diagram separates their responsibilities to make the build lifecycle understandable.
 
 ## 3. Component level 
-![](diagrams/Hugo-Component-Level-update2.png)
+![](diagrams/Hugo-Component-Level.png)
 ### 3.1 Zooming into the Parser Container
 The component diagram zooms into the **Content & Template Parser** container. This container was selected because it represents one of Hugo's most important internal processing areas: it transforms raw website source files into structured content, metadata, templates, and data objects that can later be rendered by the Core Render Engine.
 
