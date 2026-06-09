@@ -9,6 +9,7 @@
 | 21 May 2026   | Completed the C4 Container Diagram and its documentation using Draw.io. | architecture       | 3h     |
 | 26 May 2026   | Completed the C4 Component Diagram and its documentation using Draw.io. | architecture       | 3h     |
 | 28 May 2026   | change the diagram by feedback. | architecture       | 3h     |
+| 30 May 2026   |  Explain why there is only one Component Diagram in the report. | architecture       | 2h     |
 | 4 June 2026   | rewrite the section on SOLID, adding more details. | architecture       | 3h     |
 | 8 June 2026   | Revised the Architecture report to keep terminology consistent with the diagrams and reduced the content to stay within the 2500-word limit. | architecture       | 1h     |
 
